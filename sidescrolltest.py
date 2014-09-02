@@ -10,7 +10,7 @@ RED = [232, 42, 42]
 SCREEN_WIDTH=800
 SCREEN_HEIGHT=600
 
-#`````````````````````````````````````````GHOST DOG````````````````````````````````````
+#`````````````````````````````````````````GHOST PLAYER````````````````````````````````````
 class Player(pygame.sprite.Sprite):
 	
 	#Set speed vector of player
@@ -73,16 +73,21 @@ class Player(pygame.sprite.Sprite):
 
 #`````````````````````````````````````````WIZARDS````````````````````````````````````
 class Wizard(pygame.sprite.Sprite):
-
-	wizardspeed_x=0
-	wizardspeed_y=0
+	
+	#Wizard vector
+	change_x=0
+	change_y=0
+	
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load("/Users/connormcbride/Documents/Firstprogram/wizard.png").convert()
 		self.image.set_colorkey(BLACK)
 		self.image=pygame.transform.scale(self.image,[124,124])
 		self.rect=self.image.get_rect()
-		self.wizardspeed_x+=20
+	def move(self):
+		self.rect.x += self.change_x
+		self.rect.y += self.change_y
+		
 
 #`````````````````````````````````````````BULLETS````````````````````````````````````
 class Bullet(pygame.sprite.Sprite):
@@ -141,6 +146,8 @@ class Level_01(Level):
 				[210, 70, 1500, 400],
 				[210, 70, 1120, 280],
 				[210, 70, 2000, 500],
+				[210, 70, 2250, 400],
+				[210, 70, 2500, 400],
 				]
 		for platform in level:
 			block = Platform(platform[0], platform[1])
@@ -174,12 +181,13 @@ def main():
 	player.level = current_level
 	player.rect.x=340
 	player.rect.y = SCREEN_HEIGHT - player.rect.height
-	wizard.rect.x =1 
+	wizard.rect.x =0
 	wizard.rect.y=SCREEN_HEIGHT - wizard.rect.height
+	wizard.change_x=1
+	wizard.change_y=0
 	player_list.add(player)
 	enemy_list.add(wizard)
 	
-
 	clock=pygame.time.Clock()
 
 	done=False
@@ -229,14 +237,14 @@ def main():
 				player_list.remove(bullet)
 		
 		current_level.draw(screen)
-		#screen.fill(BLACK)
-		#screen.blit(background_image, [0,0])
 		player_list.draw(screen)
 		enemy_list.draw(screen)
+		wizard.move()
 		
 		clock.tick(60)
 		pygame.display.flip()
 				
 	pygame.quit ()
+	
 if __name__ == "__main__":
 	main()
